@@ -51,43 +51,30 @@ def text_cleaner(data, column_name, remove_digits = True, remove_stopwords = Tru
     if remove_digits:
         data['temporary'] = data['temporary'].apply(lambda x: re.sub('\d+',' ', str(x)))
     data['tokens'] = data['temporary'].apply(lambda x: word_tokenize(x))
-    sentenceList = []
+
     if do_lemmatization:
         lemmatizer = WordNetLemmatizer()
         if remove_stopwords:
             stopwordsList = set(stopwords.words('english'))
-            for eachSentence in data['tokens']:
-                wordList = ''
-                for eachWord in eachSentence:
-                    if eachWord not in stopwordsList:
-                        wordList = wordList + reduce_lengthening(lemmatizer.lemmatize(eachWord)) + ' '
-                sentenceList.append(wordList.strip().lower())
+            data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(lemmatizer.lemmatize(eachWord)) for eachWord in x if eachWord not in stopwordsList))
         else:
-            for eachSentence in data['tokens']:
-                wordList = ''
-                for eachWord in eachSentence:
-                    wordList = wordList + reduce_lengthening(lemmatizer.lemmatize(eachWord)) + ' '
-                sentenceList.append(wordList.strip().lower())
+
+            data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(lemmatizer.lemmatize(eachWord)) for eachWord in x))
     else:       
         if remove_stopwords:
             stopwordsList = set(stopwords.words('english'))
-            for eachSentence in data['tokens']:
-                wordList = ''
-                for eachWord in eachSentence:
-                    if eachWord not in stopwordsList:
-                        wordList = wordList + reduce_lengthening(eachWord) + ' '
-                sentenceList.append(wordList.strip().lower())
+            data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(eachWord) for eachWord in x if eachWord not in stopwordsList))
         else:
-            for eachSentence in data['tokens']:
-                wordList = ''
-                for eachWord in eachSentence:
-                    wordList = wordList + reduce_lengthening(eachWord) + ' '
-                sentenceList.append(wordList.strip().lower())
-    
-    data[new_column_name] = pd.Series(sentenceList)
+            data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(eachWord) for eachWord in x))
+
     data[new_column_name] = data[new_column_name].apply(lambda x: re.sub(r"'s\b","",x))
     data[new_column_name] = data[new_column_name].apply(lambda x: re.sub('\s+', ' ', x.strip()))
     data.drop(columns=['temporary', 'tokens'], inplace = True, axis = 1)
 
     return data
 
+# sample_data = pd.read_csv('Sheet_1.csv', nrows = 100)
+# data = text_cleaner(sample_data, 'response_text', remove_stopwords = False)
+
+# print(data.head(10))
+# sample_data.drop(colums = ['Unnamed:1'])
