@@ -4,6 +4,10 @@ from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+from collections import Counter, defaultdict
+from nltk.util import ngrams
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.pyplot as plt
 import re
 
 import warnings
@@ -73,8 +77,67 @@ def text_cleaner(data, column_name, remove_digits = True, remove_stopwords = Tru
 
     return data
 
-# sample_data = pd.read_csv('Sheet_1.csv', nrows = 100)
-# data = text_cleaner(sample_data, 'response_text', remove_stopwords = False)
+def concatString(elements):
+	return ' '.join(str(ele) for ele in elements)
+
+#creating words clouds for n-grams (n=2,3...)
+def createNgramWordCloud(dictionaryKeys, dictValues, n, remove_stopwords, save_fig):
+    newDictKeys = [concatString(x).strip() for x in dictionaryKeys]
+    newDictionary = dict(zip(newDictKeys, dictValues))
+
+    if remove_stopwords:
+        stopwords = set(STOPWORDS)
+        wordCloudbiGram = WordCloud(width = n*1000, height = n*1000, 
+                    background_color ='white', stopwords = stopwords,
+                    min_font_size = 20).generate_from_frequencies(newDictionary)
+    else:
+        wordCloudbiGram = WordCloud(width = n*1000, height = n*1000, 
+                    background_color ='white',
+                    min_font_size = 20).generate_from_frequencies(newDictionary)
+    plt.imshow(wordCloudbiGram)    
+    if save_fig:
+        plt.savefig(str(n)+'_gram.png')
+    plt.show()
+
+#creating unigram word clouds 
+def createUnigramWordCloud(corpus, remove_stopwords, save_fig):
+
+    if remove_stopwords:
+        stopwords = set(STOPWORDS)
+        wordcloud = WordCloud(width = 1000, height = 1000, 
+                    background_color ='white', stopwords = stopwords,
+                    min_font_size = 20).generate(corpus)
+    else:
+        wordcloud = WordCloud(width = 1000, height = 1000, 
+                    background_color ='white',
+                    min_font_size = 20).generate(corpus)
+    
+    plt.imshow(wordcloud)
+    if save_fig:
+        plt.savefig('Unigram.png')
+
+    plt.show()
+
+#Create n-grams
+#n = 2,3 for bi grams, trigrams respectively 
+def create_word_cloud(data, column_name, remove_stopwords = True, n = 1, save_fig = False):
+    frequencies = Counter([])
+    corpus = data[column_name].str.cat()
+    if n == 1:
+        createUnigramWordCloud(corpus, remove_stopwords, save_fig)
+    else:
+        token = word_tokenize(corpus)
+        ngramsCreated = ngrams(token, n)
+        frequencies += Counter(ngramsCreated)
+        dictionaryValues = dict(frequencies)
+        dictionaryKeys = dictionaryValues.keys()
+        dictValues = dictionaryValues.values()
+        createNgramWordCloud(dictionaryKeys, dictValues, n, remove_stopwords, save_fig)
+
+
+sample_data = pd.read_csv('Sheet_1.csv', nrows = 100)
+data = text_cleaner(sample_data, 'response_text', remove_stopwords = False)
+create_word_cloud(data, 'response_text_processed', n = 3, save_fig = True)
 
 # print(data.head(10))
 # sample_data.drop(colums = ['Unnamed:1'])
