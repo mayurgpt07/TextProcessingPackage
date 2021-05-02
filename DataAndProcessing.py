@@ -38,49 +38,91 @@ contraction_mapping = {"ain't": "is not", "aren't": "are not","can't": "cannot",
                            "you'd": "you would", "you'd've": "you would have", "you'll": "you will", "you'll've": "you will have",
                            "you're": "you are", "you've": "you have"}
 
+# Add new stop words
+def add_stopwords(listOfStopWords, is_new = False):
+    if is_new:
+        return set(listOfStopWords)
+    else:
+        return set(list(set(stopwords.words('english')))+listOfStopWords)
 
-
-
+# Reduce repeated alphabets to singletons
 def reduce_lengthening(text):
     pattern = re.compile(r"(.)\1{2,}")
     return pattern.sub(r"\1\1", text)
 
-def text_cleaner(data, column_name, remove_digits = True, remove_stopwords = True, do_lemmatization = True):
+# Text Pre processing Cleaner function
+def text_cleaner(data,
+                column_name,
+                listOfStopWords = [],
+                remove_digits = True,
+                remove_stopwords = True,
+                append_stopwords = False,
+                do_lemmatization = True):
+                
     new_column_name = column_name+'_processed'
     # htmlSyntax = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
     data['temporary'] = data[column_name].apply(lambda x: x.lower())
     data['temporary'] = data['temporary'].apply(lambda x: BeautifulSoup(x, "html.parser").text)
     data['temporary'] = data['temporary'].apply(lambda x: ' '.join([contraction_mapping[t] if t in contraction_mapping else t for t in x.split(" ")]))
     data['temporary'] = data['temporary'].apply(lambda x: re.sub('\ |\!|\/|\;|\:|\=|\"|\(|\)|\:|\]|\[|\<|\>|\{|\}|\'|\?|\.|\,|\|',' ', str(x)))
+
     if remove_digits:
         data['temporary'] = data['temporary'].apply(lambda x: re.sub('\d+',' ', str(x)))
     data['tokens'] = data['temporary'].apply(lambda x: word_tokenize(x))
 
+
     if do_lemmatization:
         lemmatizer = WordNetLemmatizer()
         if remove_stopwords:
-            stopwordsList = set(stopwords.words('english'))
+            stopwordsList = None
+            if (len(listOfStopWords) == 0 or listOfStopWords is None) and append_stopwords == False:
+                stopwordsList = set(stopwords.words('english'))
+            elif (len(listOfStopWords) == 0 or listOfStopWords is None) and append_stopwords == True:
+                print('The list of new stopwords is empty, hence error')
+            elif (len(listOfStopWords) != 0) and append_stopwords == True:
+                stopwordsList = add_stopwords(listOfStopWords, is_new = False)
+            elif (len(listOfStopWords) != 0) and append_stopwords == False:
+                stopwordsList = set(listOfStopWords)
+            else:
+                print('Case not captured')
+
             data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(lemmatizer.lemmatize(eachWord)) for eachWord in x if eachWord not in stopwordsList))
         else:
-
+            if len(listOfStopWords) != 0 or append_stopwords == True:
+                print('Error, Please set the remove_stopwords flag to True') 
             data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(lemmatizer.lemmatize(eachWord)) for eachWord in x))
+
     else:       
         if remove_stopwords:
-            stopwordsList = set(stopwords.words('english'))
+            stopwordsList = None
+            if (len(listOfStopWords) == 0 or listOfStopWords is None) and append_stopwords == False:
+                stopwordsList = set(stopwords.words('english'))
+            elif (len(listOfStopWords) == 0 or listOfStopWords is None) and append_stopwords == True:
+                print('The list of new stopwords is empty, hence error')
+            elif (len(listOfStopWords) != 0) and append_stopwords == True:
+                stopwordsList = add_stopwords(listOfStopWords, is_new = False)
+            elif (len(listOfStopWords) != 0) and append_stopwords == False:
+                stopwordsList = set(listOfStopWords)
+            else:
+                print('Case not captured')
             data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(eachWord) for eachWord in x if eachWord not in stopwordsList))
         else:
+            if len(listOfStopWords) != 0 or append_stopwords == True:
+                print('Error, Please set the remove_stopwords flag to True')
             data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(eachWord) for eachWord in x))
 
+    
     data[new_column_name] = data[new_column_name].apply(lambda x: re.sub(r"'s\b","",x))
     data[new_column_name] = data[new_column_name].apply(lambda x: re.sub('\s+', ' ', x.strip()))
     data.drop(columns=['temporary', 'tokens'], inplace = True, axis = 1)
 
     return data
 
+# Concatinate strings in different rows
 def concatString(elements):
 	return ' '.join(str(ele) for ele in elements)
 
-#creating words clouds for n-grams (n=2,3...)
+# Creating words clouds for n-grams (n=2,3...)
 def createNgramWordCloud(dictionaryKeys, dictValues, n, remove_stopwords, save_fig):
     newDictKeys = [concatString(x).strip() for x in dictionaryKeys]
     newDictionary = dict(zip(newDictKeys, dictValues))
@@ -99,7 +141,7 @@ def createNgramWordCloud(dictionaryKeys, dictValues, n, remove_stopwords, save_f
         plt.savefig(str(n)+'_gram.png')
     plt.show()
 
-#creating unigram word clouds 
+# Creating unigram word clouds 
 def createUnigramWordCloud(corpus, remove_stopwords, save_fig):
 
     if remove_stopwords:
@@ -118,8 +160,8 @@ def createUnigramWordCloud(corpus, remove_stopwords, save_fig):
 
     plt.show()
 
-#Create n-grams
-#n = 2,3 for bi grams, trigrams respectively 
+# Create n-grams
+# n = 2,3 for bi grams, trigrams respectively 
 def create_word_cloud(data, column_name, remove_stopwords = True, n = 1, save_fig = False):
     frequencies = Counter([])
     corpus = data[column_name].str.cat()
@@ -136,8 +178,8 @@ def create_word_cloud(data, column_name, remove_stopwords = True, n = 1, save_fi
 
 
 sample_data = pd.read_csv('Sheet_1.csv', nrows = 100)
-data = text_cleaner(sample_data, 'response_text', remove_stopwords = False)
-create_word_cloud(data, 'response_text_processed', n = 3, save_fig = True)
+data = text_cleaner(sample_data, 'response_text', listOfStopWords = ['try', 'avoid'], remove_stopwords = False, append_stopwords = True)
+# create_word_cloud(data, 'response_text_processed', n = 3, save_fig = True)
 
-# print(data.head(10))
+print(data.head(10))
 # sample_data.drop(colums = ['Unnamed:1'])
