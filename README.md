@@ -10,10 +10,10 @@ The package contains the following techniques:
 * Expanding short forms (aren't -> are not)
 * Lemmatization (optional)
 * Creation of word clouds with combinaton of n words (n-grams)
+* Addition of list of words to stopwords list
 
 New functionalites to be added:
 * Different types of Lemmatizers
 * Different types of Stemming 
 * Named Entity Recognition
-* Addition of list of words to stopwords list 
 
