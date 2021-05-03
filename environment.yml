@@ -1,0 +1,8 @@
+name: TextProcessing
+dependencies:
+- pandas
+- numpy
+- beautifulsoup4
+- nltk
+- wordcloud
+- matplotlib
