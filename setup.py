@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='TextProcessingPackage',
 version='0.1',
@@ -7,5 +7,5 @@ url='#',
 author='auth',
 author_email='mayurgpt07@gmail.com',
 license='MIT',
-packages=['TextProcessingPackage'],
+packages=find_packages(),
 zip_safe=False)

@@ -1,0 +1,8 @@
+LICENSE
+README.md
+setup.py
+TextProcessingPackage.egg-info/PKG-INFO
+TextProcessingPackage.egg-info/SOURCES.txt
+TextProcessingPackage.egg-info/dependency_links.txt
+TextProcessingPackage.egg-info/not-zip-safe
+TextProcessingPackage.egg-info/top_level.txt

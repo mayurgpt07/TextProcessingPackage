@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from CustomException import CustomException
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -43,7 +44,10 @@ def add_stopwords(listOfStopWords, is_new = False):
     if is_new:
         return set(listOfStopWords)
     else:
-        return set(list(set(stopwords.words('english')))+listOfStopWords)
+        if listOfStopWords is None:
+            raise CustomException('Please provide a list of stopwords')
+        else:
+            return set(list(set(stopwords.words('english')))+listOfStopWords)
 
 # Reduce repeated alphabets to singletons
 def reduce_lengthening(text):
@@ -58,7 +62,9 @@ def text_cleaner(data,
                 remove_stopwords = True,
                 append_stopwords = False,
                 do_lemmatization = True):
-                
+    if data is None or column_name is None or listOfStopWords is None or remove_stopwords is None or append_stopwords is None or do_lemmatization is None:
+        raise CustomException("Please check the arguments, one or more are assigned None value")
+    
     new_column_name = column_name+'_processed'
     # htmlSyntax = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
     data['temporary'] = data[column_name].apply(lambda x: x.lower())
@@ -78,37 +84,39 @@ def text_cleaner(data,
             if (len(listOfStopWords) == 0 or listOfStopWords is None) and append_stopwords == False:
                 stopwordsList = set(stopwords.words('english'))
             elif (len(listOfStopWords) == 0 or listOfStopWords is None) and append_stopwords == True:
-                print('The list of new stopwords is empty, hence error')
+                raise CustomException('Please provide a list of stop words or set append_stopwords == False')
             elif (len(listOfStopWords) != 0) and append_stopwords == True:
                 stopwordsList = add_stopwords(listOfStopWords, is_new = False)
             elif (len(listOfStopWords) != 0) and append_stopwords == False:
                 stopwordsList = set(listOfStopWords)
             else:
-                print('Case not captured')
+                raise CustomException('Case is not added into the repository yet')
 
             data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(lemmatizer.lemmatize(eachWord)) for eachWord in x if eachWord not in stopwordsList))
         else:
-            if len(listOfStopWords) != 0 or append_stopwords == True:
-                print('Error, Please set the remove_stopwords flag to True') 
-            data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(lemmatizer.lemmatize(eachWord)) for eachWord in x))
 
+            if len(listOfStopWords) > 0 or append_stopwords:
+                print(len(listOfStopWords), append_stopwords)
+                raise CustomException("Please set the remove_stopwords flag to True or set append_stopwords = False and listOfStopWords = []")
+            data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(lemmatizer.lemmatize(eachWord)) for eachWord in x))
     else:       
         if remove_stopwords:
             stopwordsList = None
             if (len(listOfStopWords) == 0 or listOfStopWords is None) and append_stopwords == False:
                 stopwordsList = set(stopwords.words('english'))
             elif (len(listOfStopWords) == 0 or listOfStopWords is None) and append_stopwords == True:
-                print('The list of new stopwords is empty, hence error')
+                raise CustomException('Please provide a list of stop words or set append_stopwords = False')
+
             elif (len(listOfStopWords) != 0) and append_stopwords == True:
                 stopwordsList = add_stopwords(listOfStopWords, is_new = False)
             elif (len(listOfStopWords) != 0) and append_stopwords == False:
                 stopwordsList = set(listOfStopWords)
             else:
-                print('Case not captured')
+                raise CustomException('Case is not added into the repository yet')
             data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(eachWord) for eachWord in x if eachWord not in stopwordsList))
         else:
-            if len(listOfStopWords) != 0 or append_stopwords == True:
-                print('Error, Please set the remove_stopwords flag to True')
+            if len(listOfStopWords) > 0 or append_stopwords:
+                raise CustomException("Please set the remove_stopwords flag to True or set append_stopwords = False and listOfStopWords = []")
             data[new_column_name] = data['tokens'].apply(lambda x: ' '.join(reduce_lengthening(eachWord) for eachWord in x))
 
     
@@ -178,7 +186,7 @@ def create_word_cloud(data, column_name, remove_stopwords = True, n = 1, save_fi
 
 
 sample_data = pd.read_csv('Sheet_1.csv', nrows = 100)
-data = text_cleaner(sample_data, 'response_text', listOfStopWords = ['try', 'avoid'], remove_stopwords = False, append_stopwords = True)
+data = text_cleaner(sample_data, 'response_text', listOfStopWords = [], remove_stopwords = False, append_stopwords = False, do_lemmatization = False)
 # create_word_cloud(data, 'response_text_processed', n = 3, save_fig = True)
 
 print(data.head(10))
