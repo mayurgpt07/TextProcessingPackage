@@ -4,7 +4,7 @@ from CustomException import CustomException
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, PorterStemmer
 from collections import Counter, defaultdict
 from nltk.util import ngrams
 from wordcloud import WordCloud, STOPWORDS
@@ -40,7 +40,8 @@ contraction_mapping = {"ain't": "is not", "aren't": "are not","can't": "cannot",
                            "you're": "you are", "you've": "you have"}
 
 # Add new stop words
-def add_stopwords(listOfStopWords, is_new = False):
+def add_stopwords(listOfStopWords,
+                  is_new = False):
     if is_new:
         return set(listOfStopWords)
     else:
@@ -131,7 +132,11 @@ def concatString(elements):
 	return ' '.join(str(ele) for ele in elements)
 
 # Creating words clouds for n-grams (n=2,3...)
-def createNgramWordCloud(dictionaryKeys, dictValues, n, remove_stopwords, save_fig):
+def createNgramWordCloud(dictionaryKeys, 
+                        dictValues, 
+                        n, 
+                        remove_stopwords, 
+                        save_fig):
     newDictKeys = [concatString(x).strip() for x in dictionaryKeys]
     newDictionary = dict(zip(newDictKeys, dictValues))
 
@@ -150,7 +155,9 @@ def createNgramWordCloud(dictionaryKeys, dictValues, n, remove_stopwords, save_f
     plt.show()
 
 # Creating unigram word clouds 
-def createUnigramWordCloud(corpus, remove_stopwords, save_fig):
+def createUnigramWordCloud(corpus, 
+                        remove_stopwords, 
+                        save_fig):
 
     if remove_stopwords:
         stopwords = set(STOPWORDS)
