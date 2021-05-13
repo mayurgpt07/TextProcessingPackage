@@ -16,7 +16,7 @@ The package contains the following techniques:
 
 ## Installation
 ```
-pip install TextProcessingPackage
+pip install TextPreProcessing
 ```
 
 ## Code Snippets
@@ -24,19 +24,19 @@ pip install TextProcessingPackage
 
 ```
 from DataAndProcessing import text_cleaner
-dataframe = text_cleaner(data, column_name='column_with_textdata', remove_digits=False, do_lemmatization=False)
+dataframe = text_cleaner(data, column_name='column_with_textdata', remove_stopwords=True, listOfStopWords = ['no','none'], append_stopwords=True, remove_digits=False, do_lemmatization=True)
 ```
 
 #### Create Word Cloud
 
 ```
 from DataAndProcessing import create_word_cloud
-create_word_cloud(dataframe, column_name='column_with_textdata', n=1, save_fig=True)
+create_word_cloud(dataframe, column_name='column_with_textdata', n=1, save_fig=False)
 ```
 where n = 1,2,3 means unigram, bigram and trigram respectively
 
 #### Append words to the standard NLTK stopwords list
 ```
 from DataAndProcessing import add_stopwords
-add_stopwords(listOfStopWords)
+add_stopwords(listOfStopWords, is_new = False)
 ```
