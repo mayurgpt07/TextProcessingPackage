@@ -16,7 +16,7 @@ The package contains the following techniques:
 
 ## Installation
 ```
-pip install TextPreProcessing
+pip install TextPreProc
 ```
 
 ## Code Snippets
