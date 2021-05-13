@@ -40,6 +40,12 @@ contraction_mapping = {"ain't": "is not", "aren't": "are not","can't": "cannot",
                            "you're": "you are", "you've": "you have"}
 
 # Add new stop words
+"""
+    Create a new list of stop words or append the standard NLTK stop words 
+    :listOfStopWords: Python list of words of string type
+    :is_new: True for an exclusive list of stopwords/ False to append to NLTK stopword list
+    - return: stopword set of words(can be used directly anywhere)
+"""
 def add_stopwords(listOfStopWords,
                   is_new = False):
     if is_new:
@@ -56,6 +62,17 @@ def reduce_lengthening(text):
     return pattern.sub(r"\1\1", text)
 
 # Text Pre processing Cleaner function
+"""
+    Clean the text based on your requirements 
+    :data: Pandas dataframe containing the text
+    :column_name: Name of column containing the text
+    :listOfStopWords: Python list of words of string type
+    :remove_digits: True/False to remove digits(numbers) from text
+    :remove_stopwords: True/False to remove stopwords
+    :append_stopwords: True/False append stop words to the current NLTK set
+    :do_lemmatization: True/False perform lemmatization or not
+    - return: Pandas dataframe with a new column with _processed attached to column name provided
+"""
 def text_cleaner(data,
                 column_name,
                 listOfStopWords = [],
@@ -177,6 +194,16 @@ def createUnigramWordCloud(corpus,
 
 # Create n-grams
 # n = 2,3 for bi grams, trigrams respectively 
+"""
+    Create unigram, bigram or n-gram wordclouds
+
+    :data: Pandas dataframe containing the text
+    :column_name: Name of column containing the text
+    :remove_stopwords: True/False Filter stop words from wordcloud
+    :n: Value of n in n-gram
+    :save_fig: True/False to save the chart
+    - return: None
+"""
 def create_word_cloud(data, column_name, remove_stopwords = True, n = 1, save_fig = False):
     frequencies = Counter([])
     corpus = data[column_name].str.cat()
@@ -190,11 +217,3 @@ def create_word_cloud(data, column_name, remove_stopwords = True, n = 1, save_fi
         dictionaryKeys = dictionaryValues.keys()
         dictValues = dictionaryValues.values()
         createNgramWordCloud(dictionaryKeys, dictValues, n, remove_stopwords, save_fig)
-
-
-sample_data = pd.read_csv('Sheet_1.csv', nrows = 100)
-data = text_cleaner(sample_data, 'response_text', listOfStopWords = [], remove_stopwords = False, append_stopwords = False, do_lemmatization = False)
-# create_word_cloud(data, 'response_text_processed', n = 3, save_fig = True)
-
-print(data.head(10))
-# sample_data.drop(colums = ['Unnamed:1'])
