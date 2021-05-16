@@ -1,7 +1,0 @@
-README.md
-setup.py
-TextPreProcessing.egg-info/PKG-INFO
-TextPreProcessing.egg-info/SOURCES.txt
-TextPreProcessing.egg-info/dependency_links.txt
-TextPreProcessing.egg-info/not-zip-safe
-TextPreProcessing.egg-info/top_level.txt
