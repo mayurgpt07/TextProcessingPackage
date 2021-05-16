@@ -20,7 +20,7 @@ pip install TextPreProc
 ```
 
 ## Code Snippets
-#### Preprocessing of text without lemmatization
+#### Preprocessing of text with lemmatization
 
 ```
 from DataAndProcessing import text_cleaner
