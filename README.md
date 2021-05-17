@@ -14,6 +14,9 @@ The package contains the following techniques:
 * Creation of word clouds with combinaton of n words (n-grams)
 * Addition of words to stopwords list
 
+Currently in work
+* Topic Modeling using LDA and Non Negative Matrix factorizations using both sklearn and gensim
+
 ## Installation
 ```
 pip install TextPreProc
