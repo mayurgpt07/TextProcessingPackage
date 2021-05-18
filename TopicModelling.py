@@ -24,6 +24,28 @@ class Topic_Modelling:
         else:
             raise CustomException('Type Mismatch: The parameters should be of type dicts')
 
+    def plot_top_words(model, feature_names, n_top_words, title, save_fig):
+        fig, axes = plt.subplots(2, 5, figsize=(30, 15), sharex=True)
+        axes = axes.flatten()
+        for topic_idx, topic in enumerate(model.components_):
+            top_features_ind = topic.argsort()[:-n_top_words - 1:-1]
+            top_features = [feature_names[i] for i in top_features_ind]
+            weights = topic[top_features_ind]
+
+            ax = axes[topic_idx]
+            ax.barh(top_features, weights, height=0.7)
+            ax.set_title(f'Topic {topic_idx +1}',
+                        fontdict={'fontsize': 30})
+            ax.invert_yaxis()
+            ax.tick_params(axis='both', which='major', labelsize=20)
+            for i in 'top right left'.split():
+                ax.spines[i].set_visible(False)
+            fig.suptitle(title, fontsize=40)
+
+        plt.subplots_adjust(top=0.90, bottom=0.05, wspace=0.90, hspace=0.3)
+        if save_fig:
+            plt.savefig('TopicModel.png')
+        plt.show()
 
     def bow_vectorizer_sklearn(self, corpus, parameters):
         vectorizer = CountVectorizer()
@@ -65,7 +87,7 @@ class Topic_Modelling:
         self.vectorizers['TFIDF_Gensim'] = corpus_dictionary
         return bow_corpus, self.vectorizers
 
-    def lda_topic_modeling(self, count_features, parameters, show_visualization = True):
+    def lda_topic_modeling(self, count_features, parameters, feature_names, save_fig, show_visualization = True):
         lda = LatentDirichletAllocation()
         try:
             lda.set_params(parameters)
@@ -74,32 +96,23 @@ class Topic_Modelling:
         lda.fit(count_features)
         self.topic_models['LDA_Sklearn'] = lda
         output = lda.fit_transform(count_features)
+        feature_names = feature_names
         if show_visualization:
-            if save_fig:
-                plt.savefig()
-            plt.show()
             # Call the visualizations
+            plot_top_words(lda, feature_names, 10, 'Latent Dirichlet Allocation Topic Model Distribution', save_fig)
         return output, self.topic_models
 
-    
-    def plot_top_words(model, feature_names, n_top_words, title):
-        fig, axes = plt.subplots(2, 5, figsize=(30, 15), sharex=True)
-        axes = axes.flatten()
-        for topic_idx, topic in enumerate(model.components_):
-            top_features_ind = topic.argsort()[:-n_top_words - 1:-1]
-            top_features = [feature_names[i] for i in top_features_ind]
-            weights = topic[top_features_ind]
-
-            ax = axes[topic_idx]
-            ax.barh(top_features, weights, height=0.7)
-            ax.set_title(f'Topic {topic_idx +1}',
-                        fontdict={'fontsize': 30})
-            ax.invert_yaxis()
-            ax.tick_params(axis='both', which='major', labelsize=20)
-            for i in 'top right left'.split():
-                ax.spines[i].set_visible(False)
-            fig.suptitle(title, fontsize=40)
-
-        plt.subplots_adjust(top=0.90, bottom=0.05, wspace=0.90, hspace=0.3)
-        plt.show()
+    def nmf_topic_modeling(self, features, parameters, feature_names, save_fig, show_visualization = True):
+        nmf = NMF()
+        try:
+            nmf.set_params(parameters)
+        raise:
+            CustomException('Parameter Error: Check the name and values of parameter for Non-Negative Matrix Factorization')
+        nmf.fit(features)
+        self.topic_models['NMF_Sklearn'] = nmf
+        output = nmf.fit_transform(features)
+        feature_names = feature_names
+        if show_visualization:
+            plot_top_words(nmf, feature_names, 10, 'Non-negative Matrix Factorization Topic Model Distribution', save_fig)
+        return output, self.topic_models
 
