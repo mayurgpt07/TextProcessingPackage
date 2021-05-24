@@ -64,7 +64,7 @@ class Topic_Modelling:
         vectorizer = CountVectorizer()
         if parameters:
             try:
-                vectorizer.set_params(parameters)
+                vectorizer.set_params(**parameters)
             except:
                 raise CustomException('Parameter Error: Check the name and values of parameter for CountVectorizer')
         vectorizer.fit(corpus)
@@ -91,7 +91,7 @@ class Topic_Modelling:
         vectorizer = TfidfVectorizer()
         if parameters:
             try:
-                vectorizer.set_params(parameters)
+                vectorizer.set_params(**parameters)
             except:
                 raise CustomException('Parameter Error: Check the name and values of parameter for TF-IDF Vectorizer')
         vectorizer.fit(corpus)
@@ -109,7 +109,7 @@ class Topic_Modelling:
         lda = LatentDirichletAllocation()
         if parameters:
             try:
-                lda.set_params(parameters)
+                lda.set_params(**parameters)
             except:
                 raise CustomException('Parameter Error: Check the name and values of parameter for LatentDirichiletAllocation')
         lda.fit(count_features)
@@ -124,10 +124,21 @@ class Topic_Modelling:
     def nmf_topic_modeling(self, features, parameters, feature_names, save_fig, show_visualization = True):
         nmf = NMF()
         if parameters:
+            if 'n_components' not in parameters.keys():
+                parameters['n_components'] = 10
             try:
-                nmf.set_params(parameters)
+                nmf.set_params(**parameters)
             except:
                 raise CustomException('Parameter Error: Check the name and values of parameter for Non-Negative Matrix Factorization')
+        else:
+            if 'n_components' not in parameters.keys():
+                parameters['n_components'] = 10
+            try:
+                nmf.set_params(**parameters)
+            except:
+                raise CustomException('Parameter Error: Check the name and values of parameter for Non-Negative Matrix Factorization')
+
+        print(nmf)
         nmf.fit(features)
         self.topic_models['NMF_Sklearn'] = nmf
         output = nmf.fit_transform(features)
@@ -138,7 +149,7 @@ class Topic_Modelling:
 
     def fit_transform(self):
         corpus = self.data[self.column_name].to_list()
-        print(corpus)
+        # print(corpus)
         if self.is_sklearn:
             if self.type == "bow":
                 vector = self.bow_vectorizer_sklearn(corpus, self.parameters)
@@ -154,6 +165,7 @@ class Topic_Modelling:
             elif self.type == "tfidf":
                 vector = self.tfidf_vectorizer_sklearn(corpus, self.parameters)
                 feature_names = self.vectorizers['TFIDF_Sklearn'].get_feature_names()
+                # print(feature_names)
                 if self.topic_model == "lda":
                     raise CustomException('TF-IDF features cannot be used with LDA')
                 elif self.topic_model == "nmf":
