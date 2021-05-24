@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='TextPreProc',
-version='0.4',
+version='0.5',
 description='Text preprocessing made easy in python',
 url='https://github.com/mayurgpt07/TextProcessingPackage/',
 author='auth',
@@ -14,6 +14,7 @@ install_requires = [
     'numpy',
     'matplotlib',
     'wordcloud',
-    'beautifulsoup4'
+    'beautifulsoup4',
+    'gensim'
 ],
 zip_safe=False)

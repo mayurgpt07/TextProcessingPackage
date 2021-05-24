@@ -19,7 +19,7 @@ class Topic_Modelling:
         self.topic_model = topic_modelling_type
         self.is_sklearn = is_sklearn
         self.vectorizers = dict()
-        self.topic_models = dict()
+        self.topic_models_used = dict()
         self.show_visualization = show_visualization
         self.save_fig = save_fig
         self.num_topics = num_topics
@@ -67,6 +67,7 @@ class Topic_Modelling:
                 vectorizer.set_params(**parameters)
             except:
                 raise CustomException('Parameter Error: Check the name and values of parameter for CountVectorizer')
+        print(vectorizer)
         vectorizer.fit(corpus)
         vector = vectorizer.transform(corpus)
         self.vectorizers['BOW_Sklearn'] = vectorizer
@@ -94,6 +95,7 @@ class Topic_Modelling:
                 vectorizer.set_params(**parameters)
             except:
                 raise CustomException('Parameter Error: Check the name and values of parameter for TF-IDF Vectorizer')
+        print(vectorizer)
         vectorizer.fit(corpus)
         vector = vectorizer.transform(corpus)
         self.vectorizers['TFIDF_Sklearn'] = vectorizer
@@ -112,8 +114,9 @@ class Topic_Modelling:
                 lda.set_params(**parameters)
             except:
                 raise CustomException('Parameter Error: Check the name and values of parameter for LatentDirichiletAllocation')
+        print(lda)
         lda.fit(count_features)
-        self.topic_models['LDA_Sklearn'] = lda
+        self.topic_models_used['LDA_Sklearn'] = lda
         output = lda.fit_transform(count_features)
         feature_names = feature_names
         if show_visualization:
@@ -140,12 +143,26 @@ class Topic_Modelling:
 
         print(nmf)
         nmf.fit(features)
-        self.topic_models['NMF_Sklearn'] = nmf
+        self.topic_models_used['NMF_Sklearn'] = nmf
         output = nmf.fit_transform(features)
         feature_names = feature_names
         if show_visualization:
             self.plot_top_words(nmf, feature_names, self.num_topics, self.fig_name, save_fig)
         return output
+
+    def return_models(self, return_vectorizer = False, return_topic_model = True):
+        if return_vectorizer == True and return_topic_model == True:
+            vectorizers_and_models = {}
+            vectorizers_and_models['vectorizers'] = self.vectorizers
+            vectorizers_and_models['topic_model'] = self.topic_models_used
+            return vectorizers_and_models
+        elif return_vectorizer == True and return_topic_model == False:
+            return self.vectorizers
+        elif return_vectorizer == False and return_topic_model == True:
+            return self.topic_models_used
+        else:
+            raise CustomException('Error: Choose either or both models to return')
+    
 
     def fit_transform(self):
         corpus = self.data[self.column_name].to_list()
@@ -178,9 +195,3 @@ class Topic_Modelling:
                 raise CustomException("Unknow type of vectorizer")
         else:
             vector = self.vectorizer_gensim(corpus, parameters, self.type)
-
-if __name__ == "__main__":
-    import pandas as pd
-    sample_data = pd.read_csv('Sheet_1.csv', nrows = 100)
-    tm = Topic_Modelling(sample_data, 'response_text', vectorizer_type = 'tfidf', topic_modelling_type = 'nmf')
-    tm.fit_transform()
