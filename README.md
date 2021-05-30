@@ -43,3 +43,42 @@ where n = 1,2,3 means unigram, bigram and trigram respectively
 from DataAndProcessing import add_stopwords
 add_stopwords(listOfStopWords, is_new = False)
 ```
+### Topic Modelling
+```
+from TopicModelling import Topic_Modelling
+tm = Topic_Modelling(dataframe, 
+                     column_name='response_text', 
+                     vectorizer_type = 'bow', 
+                     topic_modelling_type = 'lda', 
+                     vectorizer_parameters = {'strip_accents': 'unicode'}, 
+                     topic_model_parameters = {'init': 'random'}, 
+                     num_topics = 10, 
+                     show_visualization = True, 
+                     save_fig = False, 
+                     fig_title = 'Topics in the data', 
+                     is_sklearn = True)
+tm.fit_transform()
+```
+Output
+* None (Currently the model does not produce any output)
+Parameters and values
+* **vectorzier_type**: 'bow' or 'tfidf' (Default: 'bow')
+* **topic_modelling_type**: 'lda' or 'nmf' (Default: 'lda')
+* **vectorizer_parameters**: dictionary of parameters for sklearn CountVectorizer or TFIDFVectorizer (Default: Default model parameters)
+* **topic_model_parameters**: dictionary of parameters for sklearn NMF or LatentDirichletAllocation (Default: Default model parameters)
+* **num_topics**: number of topics (Default: 10)
+* **show_visualization**: True or False (Default: True)
+* **save_fig**: True or False (Default: False)
+* **fig_title**: Title for the plot (Default: 'Topics in the data')
+* **is_sklearn**: True or False (Currently the module supports on Sklearn modules) 
+
+### Return the trained vectorizer and topic models
+```
+tm.return_models(return_vectorizer = True, return_topic_model = True)
+```
+Output
+* Returns dictionary of models 
+
+Parameters and values
+* **return_vectorizer** = True or False (Default: False)
+* **return_topic_model** = True or False (Default: True)
