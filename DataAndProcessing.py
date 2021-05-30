@@ -217,3 +217,4 @@ def create_word_cloud(data, column_name, remove_stopwords = True, n = 1, save_fi
         dictionaryKeys = dictionaryValues.keys()
         dictValues = dictionaryValues.values()
         createNgramWordCloud(dictionaryKeys, dictValues, n, remove_stopwords, save_fig)
+
