@@ -27,8 +27,23 @@ pip install TextPreProc
 
 ```
 from DataAndProcessing import text_cleaner
-dataframe = text_cleaner(data, column_name='column_with_textdata', remove_stopwords=True, listOfStopWords = ['no','none'], append_stopwords=True, remove_digits=False, do_lemmatization=True)
+dataframe = text_cleaner(dataframe, 
+                         column_name='column_with_textdata', 
+                         remove_stopwords=True, 
+                         listOfStopWords = ['no','none'], 
+                         append_stopwords=True, 
+                         remove_digits=False, 
+                         do_lemmatization=True)
 ```
+Output
+* Return a datafram with a new column ('column_with_textdata' + '_processed')
+
+Parameters and Values
+* remove_stopwords: True or False (Default: True)
+* listOfStopWords: list of stop words to use remove from data (Dafault: empty list, Requires: remove_stopwords = true)
+* append_stopwords: True or False (Default: True)
+* remove_digits: True or False (Default: False)
+* do_lemmatization: True or False (Default: True)
 
 #### Create Word Cloud
 
