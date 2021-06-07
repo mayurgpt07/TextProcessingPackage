@@ -1,7 +1,7 @@
 Metadata-Version: 1.0
 Name: TextPreProc
-Version: 0.6
-Summary: Text preprocessing made easy in python
+Version: 1.0
+Summary: The package is created to simplify a users effort of text clearning and exploration. It allows user to clean the data and do some basic analysis like N-gram WordCouds and Topic Modelling 
 Home-page: https://github.com/mayurgpt07/TextProcessingPackage/
 Author: auth
 Author-email: mayurgpt07@gmail.com

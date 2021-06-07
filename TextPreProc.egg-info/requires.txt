@@ -5,3 +5,5 @@ matplotlib
 wordcloud
 beautifulsoup4
 gensim
+sklearn
+seaborn

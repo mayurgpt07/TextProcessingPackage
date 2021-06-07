@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(name='TextPreProc',
-version='0.6',
-description='Text preprocessing made easy in python',
+version='1.0',
+description='The package is created to simplify a users effort of text clearning and exploration. It allows user to clean the data and do some basic analysis like N-gram WordCouds and Topic Modelling ',
 url='https://github.com/mayurgpt07/TextProcessingPackage/',
 author='auth',
 author_email='mayurgpt07@gmail.com',
@@ -16,6 +16,7 @@ install_requires = [
     'wordcloud',
     'beautifulsoup4',
     'gensim',
-    'sklearn'
+    'sklearn',
+    'seaborn'
 ],
 zip_safe=False)
