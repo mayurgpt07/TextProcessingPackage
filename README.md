@@ -26,7 +26,7 @@ pip install TextPreProc
 #### Preprocessing of text with lemmatization
 
 ```
-from DataAndProcessing import text_cleaner
+from TextProcessing.DataAndProcessing import text_cleaner
 dataframe = text_cleaner(dataframe, 
                          column_name='column_with_textdata', 
                          remove_stopwords=True, 
@@ -48,19 +48,19 @@ Parameters and Values
 #### Create Word Cloud
 
 ```
-from DataAndProcessing import create_word_cloud
+from TextProcessing.DataAndProcessing import create_word_cloud
 create_word_cloud(dataframe, column_name='column_with_textdata', n=1, save_fig=False)
 ```
 where n = 1,2,3 means unigram, bigram and trigram respectively
 
 #### Append words to the standard NLTK stopwords list
 ```
-from DataAndProcessing import add_stopwords
+from TextProcessing.DataAndProcessing import add_stopwords
 add_stopwords(listOfStopWords, is_new = False)
 ```
 ### Topic Modelling
 ```
-from TopicModelling import Topic_Modelling
+from TextProcessing.TopicModelling import Topic_Modelling
 tm = Topic_Modelling(dataframe, 
                      column_name='response_text', 
                      vectorizer_type = 'bow', 
