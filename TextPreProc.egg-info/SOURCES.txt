@@ -6,3 +6,7 @@ TextPreProc.egg-info/dependency_links.txt
 TextPreProc.egg-info/not-zip-safe
 TextPreProc.egg-info/requires.txt
 TextPreProc.egg-info/top_level.txt
+TextProcessing/CustomException.py
+TextProcessing/DataAndProcessing.py
+TextProcessing/TopicModelling.py
+TextProcessing/__init__.py

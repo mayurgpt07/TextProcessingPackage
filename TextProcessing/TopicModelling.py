@@ -1,5 +1,5 @@
 import warnings
-from CustomException import CustomException
+from TextProcessing import CustomException
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.decomposition import NMF, LatentDirichletAllocation
 from gensim.corpora import Dictionary
@@ -11,6 +11,7 @@ import pandas as pd
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 
+# Add methods to only use vectorizer individually
 warnings.filterwarnings("ignore")
 
 class Topic_Modelling:
@@ -205,8 +206,47 @@ class Topic_Modelling:
         else:
             raise CustomException('Error: Choose either or both models to return')
     
+    def fit_vectorizers(self, get_results = True, drop_text_columns = False):
+        corpus = self.data[self.column_name].to_list()
+        if self.is_sklearn:
+            if self.type == "bow":
+                vector = self.bow_vectorizer_sklearn(corpus, self.parameters)
+                vectorizer_dictionary = self.return_models(return_vectorizer = True, return_topic_model = False)
+                vectorizer = vectorizer_dictionary['BOW_Sklearn']
+                
+                if get_results == True:
 
-    def fit_transform(self):
+                    # Replace with corpus
+                    features = vectorizer.transform(self.data[self.column_name].to_list())
+                    intermediate_df = pd.DataFrame(features.toarray(), columns = vectorizer.get_feature_names())
+                    if drop_text_columns:
+                        new_df = self.data.drop(columns=[self.column_name], inplace = True)
+                    else:
+                        new_df = self.data
+                    vectorized_df = pd.concat([new_df, intermediate_df], axis=1)
+                    return vectorized_df, vectorizer
+                else:
+                    return vectorizer
+            elif self.type == "tfidf":
+                vector = self.tfidf_vectorizer_sklearn(corpus, self.parameters)
+                vectorizer_dictionary = self.return_models(return_vectorizer = True, return_topic_model = False)
+                vectorizer = vectorizer_dictionary['TFIDF_Sklearn']
+                
+                if get_results == True:
+
+                    # Replace with corpus
+                    features = vectorizer.transform(self.data[self.column_name].to_list())
+                    intermediate_df = pd.DataFrame(features.toarray(), columns = vectorizer.get_feature_names())
+                    if drop_text_columns:
+                        new_df = self.data.drop(columns=[self.column_name], inplace = True)
+                    else:
+                        new_df = self.data
+                    vectorized_df = pd.concat([new_df, intermediate_df], axis=1)
+                    return vectorized_df, vectorizer
+                else:
+                    return vectorizer
+
+    def fit_topicModel(self):
         corpus = self.data[self.column_name].to_list()
         # print(corpus)
         if self.is_sklearn:

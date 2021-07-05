@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from CustomException import CustomException
+from TextProcessing import CustomException
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
