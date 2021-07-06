@@ -220,7 +220,7 @@ class Topic_Modelling:
                     features = vectorizer.transform(self.data[self.column_name].to_list())
                     intermediate_df = pd.DataFrame(features.toarray(), columns = vectorizer.get_feature_names())
                     if drop_text_columns:
-                        new_df = self.data.drop(columns=[self.column_name], inplace = True)
+                        new_df = self.data.drop(columns=[self.column_name])
                     else:
                         new_df = self.data
                     vectorized_df = pd.concat([new_df, intermediate_df], axis=1)
@@ -238,7 +238,7 @@ class Topic_Modelling:
                     features = vectorizer.transform(self.data[self.column_name].to_list())
                     intermediate_df = pd.DataFrame(features.toarray(), columns = vectorizer.get_feature_names())
                     if drop_text_columns:
-                        new_df = self.data.drop(columns=[self.column_name], inplace = True)
+                        new_df = self.data.drop(columns=[self.column_name])
                     else:
                         new_df = self.data
                     vectorized_df = pd.concat([new_df, intermediate_df], axis=1)
