@@ -111,4 +111,4 @@ Parameters and values
 * **return_topic_model** = True or False (Default: True)
 
 ### Example of cleaning data and topic modelling with TF-IDF and Non-Negative Matrix Factorization
-![alt text](SampleCode.png)
+![alt text](SampleCode.PNG)
