@@ -87,13 +87,28 @@ Parameters and values
 * **fig_title**: Title for the plot (Default: 'Topics in the data')
 * **is_sklearn**: True or False (Currently the module supports on Sklearn modules) 
 
+### Run only the vectorizer and features as values
+```
+tm.return_models(get_results = True, drop_text_columns = True)
+```
+Output
+* Returns dataframe with vectorizer features as columns
+* Returns vectorizer chosen
+
+Parameters and values
+* **get_results** = Return the dataset with vectorizer features as columns (Default: True)
+* **drop_text_columns** = Delete the base text column (Default: False)
+
 ### Return the trained vectorizer and topic models
 ```
 tm.return_models(return_vectorizer = True, return_topic_model = True)
 ```
 Output
-* Returns dictionary of models 
+* Returns dictionary of vectorizer and topic models 
 
 Parameters and values
 * **return_vectorizer** = True or False (Default: False)
 * **return_topic_model** = True or False (Default: True)
+
+### Example of cleaning data and topic modelling with TF-IDF and Non-Negative Matrix Factorization
+![alt text](SampleCode.png)
